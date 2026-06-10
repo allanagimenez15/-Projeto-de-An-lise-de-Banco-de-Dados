@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Starbucks · Análise de Banco de Dados — Allana Gimenez Machado</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     NAV LATERAL
+════════════════════════════════════════════ -->
+<nav id="sidenav">
+  <div class="nav-brand">
+    <div class="nav-brand-ring">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4-1.8 4-4 4"/></svg>
+    </div>
+    <div class="nav-brand-text">
+      <b>Starbucks DB</b>
+      <span>AGM · 2025</span>
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Apresentação</div>
+    <a class="nav-item active" href="#hero" onclick="setActive(this)">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Início
+    </a>
+    <a class="nav-item" href="#conceito" onclick="setActive(this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      O Conceito
+    </a>
+    <a class="nav-item" href="#modelo" onclick="setActive(this)">
+      <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      Modelo de Dados
+    </a>
+  </div>
+
+  <div class="nav-divider"></div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Sistema ao Vivo</div>
+    <a class="nav-item" href="#dashboard" onclick="setActive(this)">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+    <a class="nav-item" href="#vendas" onclick="setActive(this)">
+      <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      Registrar Venda
+    </a>
+    <a class="nav-item" href="#estoque" onclick="setActive(this)">
+      <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      Estoque
+      <span class="nav-badge" id="low-badge" style="display:none">!</span>
+    </a>
+    <a class="nav-item" href="#movimentacoes" onclick="setActive(this)">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Movimentações
+    </a>
+    <a class="nav-item" href="#analise" onclick="setActive(this)">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Análise de Lucro
+    </a>
+    <a class="nav-item" href="#diagrama-er" onclick="setActive(this)">
+      <svg viewBox="0 0 24 24"><rect x="2" y="3" width="7" height="5" rx="1"/><rect x="15" y="3" width="7" height="5" rx="1"/><rect x="8" y="16" width="8" height="5" rx="1"/><line x1="5.5" y1="8" x2="5.5" y2="18"/><line x1="18.5" y1="8" x2="12" y2="16"/><line x1="5.5" y1="18" x2="12" y2="16"/></svg>
+      Diagrama ER
+    </a>
+  </div>
+
+  <div class="nav-divider"></div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Cadastros</div>
+    <a class="nav-item" href="#" onclick="openInsumoModal(null);return false;">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Novo Insumo
+    </a>
+    <a class="nav-item" href="#" onclick="openProdutoModal(null);return false;">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Novo Produto
+    </a>
+  </div>
+
+  <div class="nav-live-dot">
+    <div class="live-pulse"></div>
+    <span>Sistema ativo</span>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════════
+     CONTEÚDO PRINCIPAL
+════════════════════════════════════════════ -->
+<main id="main-scroll">
+
+  <!-- ① HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-ring"></div>
+    <div class="hero-ring"></div>
+    <div class="hero-ring"></div>
+    <div class="hero-inner">
+      <div class="hero-eyebrow">
+        <span class="hero-eyebrow-dot"></span>
+        Projeto · Ciências da Computação
+        <span class="hero-eyebrow-dot"></span>
+      </div>
+      <h1>Star<em>bucks</em><br>Database</h1>
+      <p class="hero-desc">Um modelo de banco de dados que rastreia como insumos se transformam em receitas, calcula custos em tempo real e movimenta o estoque a cada venda.</p>
+      <div class="hero-author">
+        <div class="hero-author-line"></div>
+        <span>Allana Gimenez Machado</span>
+        <div class="hero-author-line"></div>
+      </div>
+    </div>
+    <div class="hero-scroll" onclick="document.getElementById('conceito').scrollIntoView({behavior:'smooth'})">
+      <span>explorar</span>
+      <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </section>
+
+  <!-- ② CONCEITO -->
+  <section class="sec conceito-bg" id="conceito">
+    <div style="max-width:1060px;margin:0 auto;">
+      <span class="sec-label reveal">O Problema</span>
+      <h2 class="sec-title reveal d1">O Desafio da<br><em>Cafeteria</em></h2>
+      <div class="conceito-grid">
+        <div class="conceito-text reveal d2">
+          <p>Sistemas tradicionais de estoque rastreiam produtos que <strong>entram como A e saem como A</strong>. Uma caixa de leite entra, uma caixa de leite sai.</p>
+          <p>Em uma cafeteria, a lógica é diferente: <strong>múltiplos insumos se transformam em uma única receita</strong>. O leite, o xarope, o café e o gelo entram separados — e saem juntos como um Iced Caramel Macchiato.</p>
+          <p>Este projeto modela exatamente essa transformação, tornando possível calcular o custo exato de cada bebida, controlar o estoque de ingredientes e analisar a margem de lucro — tudo de forma automática.</p>
+        </div>
+        <div class="reveal d3">
+          <div class="transform-box">
+            <div class="tb-label">Modelo tradicional</div>
+            <div class="tb-row">
+              <span class="pill pill-in">1 L Leite</span>
+              <div class="tb-arr"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+              <span class="pill pill-in">1 L Leite vendido</span>
+            </div>
+            <div class="tb-vs">VS</div>
+            <div class="tb-label">Modelo cafeteria</div>
+            <div class="tb-row">
+              <span class="pill pill-in" style="font-size:11px;line-height:1.5">240ml Leite<br>22ml Xarope<br>2 doses Café…</span>
+              <div class="tb-arr"><svg viewBox="0 0 24 24" style="stroke:var(--gold);opacity:.7"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+              <span class="pill pill-out">☕ Iced Caramel<br>Macchiato</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ③ MODELO -->
+  <section class="sec modelo-bg" id="modelo">
+    <div style="max-width:1060px;margin:0 auto;">
+      <span class="sec-label reveal">Arquitetura</span>
+      <h2 class="sec-title reveal d1">Modelo de<br><em>Dados</em></h2>
+      <div class="modelo-cards">
+        <div class="mc reveal d1">
+          <div class="mc-n">01</div>
+          <h3>insumos</h3>
+          <p>Matérias-primas: nome, unidade, quantidade na embalagem, preço e custo unitário calculado automaticamente.</p>
+          <pre>CREATE TABLE insumos (
+  id   INT AUTO_INCREMENT
+       PRIMARY KEY,
+  nome VARCHAR(100) NOT NULL,
+  unidade ENUM('ml','g','un'),
+  qtd_embalagem DECIMAL,
+  preco_compra  DECIMAL,
+  custo_unitario DECIMAL
+    GENERATED ALWAYS AS
+    (preco_compra /
+     qtd_embalagem) STORED
+);</pre>
+        </div>
+        <div class="mc reveal d2">
+          <div class="mc-n">02</div>
+          <h3>produtos_finais</h3>
+          <p>Itens do cardápio: nome, tamanho e preço de venda final ao cliente.</p>
+          <pre>CREATE TABLE produtos_finais (
+  id   INT AUTO_INCREMENT
+       PRIMARY KEY,
+  nome VARCHAR(100) NOT NULL,
+  tamanho  VARCHAR(20),
+  preco_venda DECIMAL(10,2)
+);</pre>
+        </div>
+        <div class="mc reveal d3">
+          <div class="mc-n">03</div>
+          <h3>receitas</h3>
+          <p>Ficha técnica: liga cada insumo ao produto final com a quantidade exata utilizada.</p>
+          <pre>CREATE TABLE receitas (
+  id         INT AUTO_INCREMENT
+             PRIMARY KEY,
+  produto_id INT,
+  insumo_id  INT,
+  quantidade_usada DECIMAL,
+  FOREIGN KEY (produto_id)
+    REFERENCES produtos_finais(id),
+  FOREIGN KEY (insumo_id)
+    REFERENCES insumos(id)
+);</pre>
+        </div>
+      </div>
+
+      <!-- SQL block -->
+      <div class="sql-block reveal">
+        <div class="sql-bar">
+          <div class="sql-dot" style="background:#FF5F57"></div>
+          <div class="sql-dot" style="background:#FFBD2E"></div>
+          <div class="sql-dot" style="background:#28C840"></div>
+          <span class="sql-bar-title">consulta_lucratividade.sql</span>
+        </div>
+        <div class="sql-body">
+<span class="kw">SELECT</span>
+    <span class="col">p.nome</span> <span class="kw">AS</span> <span class="str">Produto</span>, <span class="col">p.tamanho</span>,
+    <span class="fn">SUM</span>(<span class="col">r.quantidade_usada</span> * <span class="col">i.custo_unitario</span>) <span class="kw">AS</span> <span class="str">custo_producao_total</span>,
+    <span class="col">p.preco_venda</span>,
+    (<span class="col">p.preco_venda</span> - <span class="fn">SUM</span>(<span class="col">r.quantidade_usada</span> * <span class="col">i.custo_unitario</span>)) <span class="kw">AS</span> <span class="str">lucro_bruto</span>
+<span class="kw">FROM</span> <span class="col">produtos_finais</span> p
+<span class="kw">JOIN</span> <span class="col">receitas</span> r <span class="kw">ON</span> p.id = r.produto_id
+<span class="kw">JOIN</span> <span class="col">insumos</span>  i <span class="kw">ON</span> r.insumo_id = i.id
+<span class="kw">GROUP BY</span> p.id;
+
+<span class="cm">-- Resultado: Iced Caramel Macchiato | Grande | R$7.73 | R$22.00 | R$14.27</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIVISOR AO VIVO -->
+  <div class="live-divider">
+    <div class="ld-dot"></div>
+    <span class="ld-text">Sistema ao Vivo — Demonstração Interativa</span>
+    <div class="ld-line"></div>
+    <div class="ld-dot"></div>
+  </div>
+
+  <!-- ④ DASHBOARD -->
+  <section class="sec dash-bg" id="dashboard">
+    <div style="max-width:1060px;margin:0 auto;">
+      <span class="sec-label">Tempo Real</span>
+      <h2 class="sec-title">Dashboard <em>Operacional</em></h2>
+      <div id="dash-alert-wrap"></div>
+      <div class="metrics-row">
+        <div class="mcard"><div class="ml">Vendas Realizadas</div><div class="mv" id="m-vendas">0</div><div class="ms">pedidos totais</div></div>
+        <div class="mcard"><div class="ml">Receita Total</div><div class="mv" id="m-receita">R$ 0,00</div><div class="ms">acumulado</div></div>
+        <div class="mcard"><div class="ml">Lucro Bruto</div><div class="mv" id="m-lucro">R$ 0,00</div><div class="ms">acumulado</div></div>
+        <div class="mcard"><div class="ml">Alertas de Estoque</div><div class="mv" id="m-alertas">0</div><div class="ms">itens críticos</div></div>
+      </div>
+      <div class="dash-grid">
+        <div class="card">
+          <div class="card-head"><h3>Estoque em Tempo Real</h3><span id="stock-updated">—</span></div>
+          <table>
+            <thead><tr><th>Insumo</th><th style="min-width:160px">Nível</th><th>Status</th></tr></thead>
+            <tbody id="stock-mini-tbody"></tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Feed de Movimentações</h3><span id="feed-count">0 registros</span></div>
+          <div id="feed-dash" style="max-height:340px;overflow-y:auto;">
+            <div class="feed-empty">Nenhuma movimentação ainda.<br>Registre uma venda para começar.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑤ VENDAS -->
+  <section class="sec vendas-bg" id="vendas">
+    <div style="max-width:1060px;margin:0 auto;">
+      <span class="sec-label">Demonstração</span>
+      <h2 class="sec-title">Registrar <em>Venda</em></h2>
+      <p style="font-size:14px;color:var(--tl);margin-top:12px;">Ao confirmar uma venda, os ingredientes são deduzidos do estoque em tempo real e uma movimentação é registrada automaticamente.</p>
+      <div class="vendas-grid" id="vendas-grid"></div>
+    </div>
+  </section>
+
+  <!-- ⑥ ESTOQUE -->
+  <section class="sec" style="background:#fff;" id="estoque">
+    <div style="max-width:1060px;margin:0 auto;">
+      <span class="sec-label">Controle</span>
+      <h2 class="sec-title">Estoque de <em>Insumos</em></h2>
+      <p style="font-size:14px;color:var(--tl);margin-top:12px;margin-bottom:24px;">As barras atualizam em tempo real a cada venda. Use "Abastecer" para registrar uma entrada de estoque.</p>
+      <div class="card">
+        <div class="card-head">
+          <h3>Todos os Insumos</h3>
+          <button class="btn btn-p" style="font-size:12px;padding:7px 16px;" onclick="openInsumoModal(null)">+ Novo Insumo</button>
+        </div>
+        <table>
+          <thead><tr><th>Nome</th><th>Unidade</th><th>Estoque Atual</th><th>Mínimo</th><th>Custo Unit.</th><th>Status</th><th>Ações</th></tr></thead>
+          <tbody id="estoque-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑦ MOVIMENTAÇÕES -->
+  <section class="sec" style="background:var(--crd);" id="movimentacoes">
+    <div style="max-width:1060px;margin:0 auto;">
+      <span class="sec-label">Rastreabilidade</span>
+      <h2 class="sec-title">Histórico de <em>Movimentações</em></h2>
+      <p style="font-size:14px;color:var(--tl);margin-top:12px;margin-bottom:24px;">Cada entrada e saída de insumo é registrada com produto, quantidade, motivo e horário.</p>
+      <div class="card">
+        <div class="card-head"><h3>Todas as Movimentações</h3><span id="all-mov-count">0 registros</span></div>
+        <div id="all-feed" style="max-height:520px;overflow-y:auto;">
+          <div class="feed-empty">Nenhuma movimentação registrada ainda.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑧ ANÁLISE -->
+  <section class="sec analise-bg" id="analise">
+    <div style="max-width:1060px;margin:0 auto;">
+      <span class="sec-label">Financeiro</span>
+      <h2 class="sec-title">Análise de <em>Lucratividade</em></h2>
+      <div class="card" style="margin-top:52px;">
+        <div class="card-head"><h3>Lucro por Produto</h3></div>
+        <table>
+          <thead><tr><th>Produto</th><th>Tamanho</th><th>Custo Prod.</th><th>Preço Venda</th><th>Lucro Unit.</th><th>Margem</th><th>Qtd Vendida</th><th>Lucro Total</th></tr></thead>
+          <tbody id="analise-tbody"></tbody>
+        </table>
+      </div>
+      <div class="analise-comp" id="analise-comp"></div>
+    </div>
+  </section>
+
+  <!-- ⑨ DIAGRAMA ER -->
+  <section class="sec er-bg" id="diagrama-er">
+    <div style="max-width:1060px;margin:0 auto;">
+      <span class="sec-label reveal">Estrutura</span>
+      <h2 class="sec-title reveal d1">Diagrama <em>Entidade-Relacionamento</em></h2>
+      <p class="reveal d2" style="font-size:13px;color:rgba(255,255,255,.38);margin-top:10px;">Visualização das tabelas, chaves primárias (PK), chaves estrangeiras (FK) e seus relacionamentos.</p>
+
+      <div class="reveal d3" style="margin-top:48px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:48px 40px;overflow-x:auto;">
+
+        <!-- ROW 1: insumos ← receitas (pivô) → produtos_finais -->
+        <div style="display:flex;align-items:flex-start;justify-content:center;gap:0;margin-bottom:60px;flex-wrap:nowrap;min-width:700px;">
+
+          <!-- insumos -->
+          <div style="flex-shrink:0;">
+            <div style="font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);text-align:center;margin-bottom:10px;">TABELA</div>
+            <div style="width:210px;border-radius:10px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.35);">
+              <div style="background:#00704A;padding:12px 16px;display:flex;align-items:center;gap:8px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+                <span style="font-size:13px;font-weight:600;color:#fff;">insumos</span>
+              </div>
+              <div style="background:#1C2B22;">
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,.05);">
+                  <div style="display:flex;align-items:center;gap:6px;"><span style="background:#D4A017;color:#000;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;">PK</span><span style="font-size:12px;color:rgba(255,255,255,.8);font-weight:500;">id</span></div>
+                  <span style="font-size:10px;color:rgba(255,255,255,.3);">INT</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:7px 14px;border-bottom:1px solid rgba(255,255,255,.05);"><span style="font-size:11.5px;color:rgba(255,255,255,.65);">nome</span><span style="font-size:10px;color:rgba(255,255,255,.3);">VARCHAR(100)</span></div>
+                <div style="display:flex;justify-content:space-between;padding:7px 14px;border-bottom:1px solid rgba(255,255,255,.05);"><span style="font-size:11.5px;color:rgba(255,255,255,.65);">unidade_medida</span><span style="font-size:10px;color:rgba(255,255,255,.3);">ENUM</span></div>
+                <div style="display:flex;justify-content:space-between;padding:7px 14px;border-bottom:1px solid rgba(255,255,255,.05);"><span style="font-size:11.5px;color:rgba(255,255,255,.65);">qtd_embalagem</span><span style="font-size:10px;color:rgba(255,255,255,.3);">DECIMAL</span></div>
+                <div style="display:flex;justify-content:space-between;padding:7px 14px;border-bottom:1px solid rgba(255,255,255,.05);"><span style="font-size:11.5px;color:rgba(255,255,255,.65);">preco_compra</span><span style="font-size:10px;color:rgba(255,255,255,.3);">DECIMAL</span></div>
+                <div style="display:flex;justify-content:space-between;padding:7px 14px;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(240,217,154,.06);"><span style="font-size:11.5px;color:#F0D99A;font-weight:500;">custo_unitario</span><span style="font-size:10px;color:#F0D99A;opacity:.7;">GENERATED</span></div>
+                <div style="display:flex;justify-content:space-between;padding:7px 14px;"><span style="font-size:11.5px;color:rgba(255,255,255,.65);">estoque_atual</span><span style="font-size:10px;color:rgba(255,255,255,.3);">DECIMAL</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seta 1 → N -->
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 16px;margin-top:80px;flex-shrink:0;width:100px;">
+            <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,.5);margin-bottom:4px;">1</span>
+            <div style="display:flex;align-items:center;width:100%;">
+              <div style="flex:1;border-top:2px dashed rgba(156,220,254,.45);"></div>
+              <svg width="10" height="10" viewBox="0 0 10 10"><path d="M0,0 L0,10 L10,5 z" fill="rgba(156,220,254,.6)"/></svg>
+            </div>
+            <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,.5);margin-top:4px;">N</span>
+            <span style="font-size:9px;color:rgba(156,220,254,.45);margin-top:6px;text-align:center;">FK:<br>insumo_id</span>
+          </div>
+
+          <!-- receitas (pivô) -->
+          <div style="flex-shrink:0;">
+            <div style="font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);text-align:center;margin-bottom:10px;">TABELA PIVÔ</div>
+            <div style="width:210px;border-radius:10px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.35);">
+              <div style="background:#8B4513;padding:12px 16px;display:flex;align-items:center;gap:8px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+                <span style="font-size:13px;font-weight:600;color:#fff;">receitas</span>
+              </div>
+              <div style="background:#2A1A0E;">
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,.05);">
+                  <div style="display:flex;align-items:center;gap:6px;"><span style="background:#D4A017;color:#000;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;">PK</span><span style="font-size:12px;color:rgba(255,255,255,.8);font-weight:500;">id</span></div>
+                  <span style="font-size:10px;color:rgba(255,255,255,.3);">INT</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,.05);">
+                  <div style="display:flex;align-items:center;gap:6px;"><span style="background:#1B4F72;color:#9CDCFE;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;">FK</span><span style="font-size:12px;color:#9CDCFE;font-weight:500;">produto_id</span></div>
+                  <span style="font-size:10px;color:rgba(255,255,255,.3);">INT</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,.05);">
+                  <div style="display:flex;align-items:center;gap:6px;"><span style="background:#1B4F72;color:#9CDCFE;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;">FK</span><span style="font-size:12px;color:#9CDCFE;font-weight:500;">insumo_id</span></div>
+                  <span style="font-size:10px;color:rgba(255,255,255,.3);">INT</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:7px 14px;"><span style="font-size:11.5px;color:rgba(255,255,255,.65);">quantidade_usada</span><span style="font-size:10px;color:rgba(255,255,255,.3);">DECIMAL</span></div>
+              </div>
+            </div>
+            <div style="margin-top:12px;background:rgba(240,217,154,.08);border:1px solid rgba(240,217,154,.2);border-radius:8px;padding:9px 12px;font-size:11px;color:rgba(240,217,154,.7);line-height:1.5;text-align:center;">
+              ⚡ Tabela pivô:<br>liga insumos ↔ produtos<br>com a quantidade usada
+            </div>
+          </div>
+
+          <!-- Seta N → 1 -->
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 16px;margin-top:80px;flex-shrink:0;width:100px;">
+            <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,.5);margin-bottom:4px;">N</span>
+            <div style="display:flex;align-items:center;width:100%;">
+              <div style="flex:1;border-top:2px dashed rgba(156,220,254,.45);"></div>
+              <svg width="10" height="10" viewBox="0 0 10 10"><path d="M0,0 L0,10 L10,5 z" fill="rgba(156,220,254,.6)"/></svg>
+            </div>
+            <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,.5);margin-top:4px;">1</span>
+            <span style="font-size:9px;color:rgba(156,220,254,.45);margin-top:6px;text-align:center;">FK:<br>produto_id</span>
+          </div>
+
+          <!-- produtos_finais -->
+          <div style="flex-shrink:0;">
+            <div style="font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);text-align:center;margin-bottom:10px;">TABELA</div>
+            <div style="width:210px;border-radius:10px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.35);">
+              <div style="background:#1B3A6B;padding:12px 16px;display:flex;align-items:center;gap:8px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+                <span style="font-size:13px;font-weight:600;color:#fff;">produtos_finais</span>
+              </div>
+              <div style="background:#0F1E35;">
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,.05);">
+                  <div style="display:flex;align-items:center;gap:6px;"><span style="background:#D4A017;color:#000;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;">PK</span><span style="font-size:12px;color:rgba(255,255,255,.8);font-weight:500;">id</span></div>
+                  <span style="font-size:10px;color:rgba(255,255,255,.3);">INT</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:7px 14px;border-bottom:1px solid rgba(255,255,255,.05);"><span style="font-size:11.5px;color:rgba(255,255,255,.65);">nome</span><span style="font-size:10px;color:rgba(255,255,255,.3);">VARCHAR(100)</span></div>
+                <div style="display:flex;justify-content:space-between;padding:7px 14px;border-bottom:1px solid rgba(255,255,255,.05);"><span style="font-size:11.5px;color:rgba(255,255,255,.65);">tamanho</span><span style="font-size:10px;color:rgba(255,255,255,.3);">VARCHAR(20)</span></div>
+                <div style="display:flex;justify-content:space-between;padding:7px 14px;"><span style="font-size:11.5px;color:rgba(255,255,255,.65);">preco_venda</span><span style="font-size:10px;color:rgba(255,255,255,.3);">DECIMAL</span></div>
+              </div>
+            </div>
+          </div>
+        </div><!-- fim row 1 -->
+
+        <!-- ROW 2: movimentacoes_estoque + vendas -->
+        <div style="display:flex;align-items:flex-start;justify-content:center;gap:80px;flex-wrap:nowrap;min-width:700px;">
+
+          <!-- movimentacoes_estoque -->
+          <div style="flex-shrink:0;">
+            <div style="font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);text-align:center;margin-bottom:10px;">TABELA</div>
+            <div style="width:240px;border-radius:10px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.35);">
+              <div style="background:#5B3A8A;padding:12px 16px;display:flex;align-items:center;gap:8px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+                <span style="font-size:12.5px;font-weight:600;color:#fff;">movimentacoes_estoque</span>
+              </div>
+              <div style="background:#1E0F35;">
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,.05);">
+                  <div style="display:flex;align-items:center;gap:6px;"><span style="background:#D4A017;color:#000;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;">PK</span><span style="font-size:12px;color:rgba(255,255,255,.8);font-weight:500;">id</span></div>
+                  <span style="font-size:10px;color:rgba(255,255,255,.3);">INT</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,.05);">
+                  <div style="display:flex;align-items:center;gap:6px;"><span style="background:#1B4F72;color:#9CDCFE;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;">FK</span><span style="font-size:12px;color:#9CDCFE;font-weight:500;">insumo_id</span></div>
+                  <span style="font-size:10px;color:rgba(255,255,255,.3);">INT</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:7px 14px;border-bottom:1px solid rgba(255,255,255,.05);"><span style="font-size:11.5px;color:rgba(255,255,255,.65);">tipo</span><span style="font-size:10px;color:rgba(255,255,255,.3);">ENUM</span></div>
+                <div style="display:flex;justify-content:space-between;padding:7px 14px;border-bottom:1px solid rgba(255,255,255,.05);"><span style="font-size:11.5px;color:rgba(255,255,255,.65);">quantidade</span><span style="font-size:10px;color:rgba(255,255,255,.3);">DECIMAL</span></div>
+                <div style="display:flex;justify-content:space-between;padding:7px 14px;border-bottom:1px solid rgba(255,255,255,.05);"><span style="font-size:11.5px;color:rgba(255,255,255,.65);">motivo</span><span style="font-size:10px;color:rgba(255,255,255,.3);">VARCHAR(200)</span></div>
+                <div style="display:flex;justify-content:space-between;padding:7px 14px;"><span style="font-size:11.5px;color:rgba(255,255,255,.65);">data_hora</span><span style="font-size:10px;color:rgba(255,255,255,.3);">DATETIME</span></div>
+              </div>
+            </div>
+            <div style="margin-top:10px;background:rgba(91,58,138,.2);border:1px solid rgba(91,58,138,.4);border-radius:8px;padding:9px 12px;font-size:11px;color:rgba(200,180,255,.7);line-height:1.5;text-align:center;">
+              📋 Gerada automaticamente<br>a cada entrada ou saída de estoque
+            </div>
+          </div>
+
+          <!-- vendas -->
+          <div style="flex-shrink:0;">
+            <div style="font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);text-align:center;margin-bottom:10px;">TABELA</div>
+            <div style="width:210px;border-radius:10px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.35);">
+              <div style="background:#1E3932;padding:12px 16px;display:flex;align-items:center;gap:8px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+                <span style="font-size:13px;font-weight:600;color:#fff;">vendas</span>
+              </div>
+              <div style="background:#0A2018;">
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,.05);">
+                  <div style="display:flex;align-items:center;gap:6px;"><span style="background:#D4A017;color:#000;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;">PK</span><span style="font-size:12px;color:rgba(255,255,255,.8);font-weight:500;">id</span></div>
+                  <span style="font-size:10px;color:rgba(255,255,255,.3);">INT</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,.05);">
+                  <div style="display:flex;align-items:center;gap:6px;"><span style="background:#1B4F72;color:#9CDCFE;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;">FK</span><span style="font-size:12px;color:#9CDCFE;font-weight:500;">produto_id</span></div>
+                  <span style="font-size:10px;color:rgba(255,255,255,.3);">INT</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:7px 14px;border-bottom:1px solid rgba(255,255,255,.05);"><span style="font-size:11.5px;color:rgba(255,255,255,.65);">preco_cobrado</span><span style="font-size:10px;color:rgba(255,255,255,.3);">DECIMAL</span></div>
+                <div style="display:flex;justify-content:space-between;padding:7px 14px;border-bottom:1px solid rgba(255,255,255,.05);"><span style="font-size:11.5px;color:rgba(255,255,255,.65);">custo_calculado</span><span style="font-size:10px;color:rgba(255,255,255,.3);">DECIMAL</span></div>
+                <div style="display:flex;justify-content:space-between;padding:7px 14px;"><span style="font-size:11.5px;color:rgba(255,255,255,.65);">data_hora</span><span style="font-size:10px;color:rgba(255,255,255,.3);">DATETIME</span></div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- fim row 2 -->
+      </div><!-- fim diagrama container -->
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-left">
+      <strong>Allana Gimenez Machado</strong>
+      <span>Projeto Análise de Banco de Dados · Ciências da Computação</span>
+    </div>
+    <div class="footer-right">
+      Starbucks Database Analysis<br>
+      Sistema Funcional · 2025
+    </div>
+  </footer>
+
+</main>
+
+<!-- ════════════════════════════════════════════
+     MODAIS
+════════════════════════════════════════════ -->
+
+<!-- Modal: Novo/Editar Insumo -->
+<div class="overlay" id="ov-insumo">
+  <div class="modal">
+    <h2 id="mi-title">Novo Insumo</h2>
+    <div class="fg2">
+      <div class="fg" style="grid-column:1/-1"><label>Nome do Insumo</label><input id="mi-nome" placeholder="Ex: Leite Integral"></div>
+      <div class="fg"><label>Unidade de Medida</label>
+        <select id="mi-unidade">
+          <option value="ml">ml (mililitros)</option>
+          <option value="g">g (gramas)</option>
+          <option value="un">un (unidade)</option>
+        </select>
+      </div>
+      <div class="fg"><label>Qtd. na Embalagem</label><input id="mi-emb" type="number" placeholder="1000"></div>
+      <div class="fg"><label>Preço de Compra (R$)</label><input id="mi-preco" type="number" step="0.01" placeholder="5.50"></div>
+      <div class="fg"><label>Estoque Atual</label><input id="mi-estoque" type="number" step="0.01" placeholder="0"></div>
+      <div class="fg" style="grid-column:1/-1"><label>Estoque Mínimo (alerta)</label><input id="mi-min" type="number" step="0.01" placeholder="500"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-g" onclick="closeOv('ov-insumo')">Cancelar</button>
+      <button class="btn btn-p" onclick="saveInsumo()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Reabastecer -->
+<div class="overlay" id="ov-aporte">
+  <div class="modal">
+    <h2>Reabastecer Estoque</h2>
+    <p id="aporte-desc" style="font-size:14px;color:var(--gd);margin-bottom:20px;font-weight:500;"></p>
+    <input type="hidden" id="aporte-id">
+    <div class="fg"><label>Quantidade a Adicionar</label><input id="aporte-qtd" type="number" step="0.01" placeholder="Ex: 5000"></div>
+    <div class="modal-foot">
+      <button class="btn btn-g" onclick="closeOv('ov-aporte')">Cancelar</button>
+      <button class="btn btn-p" onclick="saveAporte()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Novo/Editar Produto -->
+<div class="overlay" id="ov-produto">
+  <div class="modal">
+    <h2 id="mp-title">Novo Produto</h2>
+    <div class="fg2">
+      <div class="fg"><label>Nome do Produto</label><input id="mp-nome" placeholder="Ex: Cappuccino"></div>
+      <div class="fg"><label>Tamanho</label>
+        <select id="mp-tam">
+          <option>Pequeno</option>
+          <option>Médio</option>
+          <option selected>Grande</option>
+        </select>
+      </div>
+      <div class="fg" style="grid-column:1/-1"><label>Preço de Venda (R$)</label><input id="mp-preco" type="number" step="0.01"></div>
+    </div>
+    <div style="margin-top:14px;">
+      <label style="font-size:11px;font-weight:500;color:var(--gd);letter-spacing:.04em;">Ingredientes da Receita</label>
+      <div id="ing-list"></div>
+      <button class="btn btn-g" style="margin-top:10px;font-size:12px;padding:6px 14px;" onclick="addIngRow()">+ Ingrediente</button>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-g" onclick="closeOv('ov-produto')">Cancelar</button>
+      <button class="btn btn-p" onclick="saveProduto()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-root"></div>
+
+<!-- JS externo -->
+<script src="script.js"></script>
+</body>
+</html>
